@@ -3,14 +3,18 @@ import pandas as pd
 import streamlit as st
 
 
+@st.cache_resource
+def load_score_model():
+    return pickle.load(open('predict_ipl_1st_innings_score_etr.pkl', 'rb'))
+
 def app():
     st.markdown('''
     <h1 style='text-align:center; color: #ffcd19;'><strong>💠 SCORE PREDICTION FOR THE 1st INNING 💠</strong></h1>
     <hr style="border-top: 3px solid #ffcd19;">
     ''', unsafe_allow_html=True)
 
-    # Load  Saved Model
-    model = pickle.load(open('predict_ipl_1st_innings_score_etr.pkl', 'rb'))
+    # Load Saved Model
+    model = load_score_model()
 
     # Designing WEB APP
     # TEST_DATA = [[180, 2, 18, 70, 1, 1,0,0,0,0,1,0,0, 0,0,0,1,0,0,0,0]]

@@ -82,3 +82,19 @@ unique_stadium(new_matchesDF)
 # Apply the latest_teams function to deliveries data
 new_deliveriesDF = latest_teams(
     deliveries_df, ['batting_team', 'bowling_team'])
+
+# Optimize Memory Usage
+def optimize_memory(df):
+    for col in df.columns:
+        if pd.api.types.is_string_dtype(df[col]) or pd.api.types.is_object_dtype(df[col]):
+            df[col] = df[col].astype('category')
+        elif pd.api.types.is_integer_dtype(df[col]):
+            df[col] = pd.to_numeric(df[col], downcast='integer')
+    return df
+
+new_matchesDF = optimize_memory(new_matchesDF)
+new_deliveriesDF = optimize_memory(new_deliveriesDF)
+
+# Free up the old references
+del matches_df
+del deliveries_df

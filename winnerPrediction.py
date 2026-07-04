@@ -4,12 +4,16 @@ import pickle
 import plotly.graph_objects as go
 from scrollToTop import create_scroll_to_top_button
 
-# Load the model
-try:
-    with open('predict_win_probability_lr.pkl', 'rb') as f:
-        pipe = pickle.load(f)
-except Exception as e:
-    pipe = None
+@st.cache_resource
+def load_win_model():
+    try:
+        with open('predict_win_probability_lr.pkl', 'rb') as f:
+            pipe = pickle.load(f)
+        return pipe
+    except Exception as e:
+        return None
+
+pipe = load_win_model()
     
 teams = [
     'Chennai Super Kings', 'Kolkata Knight Riders', 'Kings XI Punjab',
