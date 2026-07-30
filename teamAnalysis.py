@@ -178,11 +178,9 @@ def app():
         plt.ylabel('Wins')
         plt.xticks(fontsize=12, rotation='vertical')
         st.pyplot(fig)
+        plt.close(fig)
 
         st.image("Images/divider.png")
-
-        st. markdown(f"<h5 style='text-align: center; color: white;'> {
-                     team} 200+ Runs </h5>", unsafe_allow_html=True)
 
         # Top 10 Highest Runs
         fig = plt.figure(figsize=(12, 10))
@@ -198,6 +196,7 @@ def app():
         plt.ylabel('Opponents')
         plt.xticks(fontsize=12, rotation='vertical')
         st.pyplot(fig)
+        plt.close(fig)
 
         st.image("Images/divider.png")
         st. markdown(f"<h5 style='text-align: center; color: white;'> {
@@ -220,6 +219,7 @@ def app():
         plt.ylabel('Opponents')
         plt.xticks(fontsize=12, rotation='vertical')
         st.pyplot(fig)
+        plt.close(fig)
 
         st.image("Images/divider.png")
 

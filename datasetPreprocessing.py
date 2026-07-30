@@ -83,7 +83,7 @@ MATCHES_COLS = [
 DELIVERIES_COLS = [
     'match_id', 'inning', 'batting_team', 'bowling_team',
     'over', 'ball', 'batter', 'bowler', 'non_striker',
-    'batsman_runs', 'total_runs', 'extras_type', 'is_wicket'
+    'batsman_runs', 'extra_runs', 'total_runs', 'extras_type', 'is_wicket'
 ]
 
 

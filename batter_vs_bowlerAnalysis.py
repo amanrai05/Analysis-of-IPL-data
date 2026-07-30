@@ -112,6 +112,7 @@ def app():
                     ax.spines['right'].set_visible(False)
 
                     st.pyplot(fig)
+                    plt.close(fig)
 
                 ###########################################################
                 # ----------------->   SUMMARY TABLE      <----------------

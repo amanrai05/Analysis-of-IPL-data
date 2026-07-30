@@ -108,6 +108,7 @@ def app():
                 plt.ylabel('Winning Count')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 ###########################################################
                 # -------------------->   TOSS WINS    <-------------------
@@ -131,6 +132,7 @@ def app():
                 plt.ylabel('Winning Count')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 ###########################################################
                 # --------------->   PLAYER OF THE MATCH    <--------------
@@ -155,6 +157,7 @@ def app():
                 frame.set_facecolor('black')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 t1_batting = combine_df[((combine_df['batting_team'] == t1) & (
                     combine_df['bowling_team'] == t2))]
@@ -256,6 +259,7 @@ def app():
                 plt.ylabel('frequency')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 ###########################################################
                 # ---------------->   HEAD TO HEAD INFO    <---------------
@@ -333,6 +337,7 @@ def app():
                 plt.xlabel('Number of Sixes')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 ###########################################################
                 # ------------------>   TEAM T1 FOURS    <-----------------
@@ -361,6 +366,7 @@ def app():
                 plt.xlabel('Number of fours')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 ###########################################################
                 # ------------------>   TEAM T2 SIXES    <-----------------
@@ -389,6 +395,7 @@ def app():
                 plt.xlabel('Number of Sixes')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 ###########################################################
                 # ------------------>   TEAM T2 FOURS    <-----------------
@@ -417,6 +424,7 @@ def app():
                 plt.xlabel('Number of fours')
 
                 st.pyplot(fig)
+                plt.close(fig)
 
                 st.image("Images/divider.png")
 
