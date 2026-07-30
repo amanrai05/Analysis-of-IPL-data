@@ -1,12 +1,5 @@
 import streamlit as st
-import homePage
-import exploratoryDataAnalysis
-import playerAnalysis
-import batter_vs_bowlerAnalysis
-import teamAnalysis
-import team_vs_teamAnalysis
-import scorePrediction
-import winnerPrediction
+import importlib
 
 st.set_page_config(
     page_title="IPL ANALYSIS",
@@ -24,23 +17,22 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Map page names to their module paths (lazy-loaded on navigation)
 PAGES = {
-    "HOME": homePage,
-    "Predict Score": scorePrediction,
-    "Exploratory Data Analysis": exploratoryDataAnalysis,
-    "Team Analysis": teamAnalysis,
-    "Team v/s Team": team_vs_teamAnalysis,
-    "Batter v/s Bowler": batter_vs_bowlerAnalysis,
-    "Player Analysis": playerAnalysis,
-    "Predict Win Probability": winnerPrediction
+    "HOME": "homePage",
+    "Predict Score": "scorePrediction",
+    "Exploratory Data Analysis": "exploratoryDataAnalysis",
+    "Team Analysis": "teamAnalysis",
+    "Team v/s Team": "team_vs_teamAnalysis",
+    "Batter v/s Bowler": "batter_vs_bowlerAnalysis",
+    "Player Analysis": "playerAnalysis",
+    "Predict Win Probability": "winnerPrediction",
 }
-
 
 st.sidebar.title('NAVIGATION')
 selection = st.sidebar.radio('', list(PAGES.keys()))
-page = PAGES[selection]
+
+# Lazy import: only load the selected page module, not all of them at once.
+# This prevents all data-heavy pages from loading datasets at startup.
+page = importlib.import_module(PAGES[selection])
 page.app()
-
-# Force reload
-
-# Force reload for homepage

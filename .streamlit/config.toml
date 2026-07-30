@@ -1,2 +1,18 @@
 [theme]
-base="dark"
+base = "dark"
+
+[server]
+# Disable file watcher — saves memory on Render (no inotify watches)
+fileWatcherType = "none"
+# Limit max upload size to 5 MB
+maxUploadSize = 5
+# Disable XSRF protection check for CDN headers on Render
+enableXsrfProtection = false
+
+[browser]
+# Gather usage stats — disable to reduce network calls
+gatherUsageStats = false
+
+[runner]
+# Disable magic commands (reduces import scanning overhead)
+magicEnabled = false

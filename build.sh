@@ -12,4 +12,7 @@ python generate_model.py
 echo "Generating Win Probability Model..."
 python generate_win_model.py
 
+# Clear pip build cache to free disk space after build
+pip cache purge || true
+
 echo "Build complete!"

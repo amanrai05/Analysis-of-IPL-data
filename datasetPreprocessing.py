@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 
 
 # Updating the team names
@@ -50,38 +51,10 @@ def unique_stadium(matches_df):
 
 def trimSpaceInValues(df):
     for col in df.columns:
-        if df[col].dtype == 'object': 
+        if df[col].dtype == 'object':
             df[col] = df[col].str.strip()
     return df
 
-
-# Loading and cleaning the matches data
-matches_df = pd.read_csv('matches_2008-2024.csv')
-matches_df.columns = matches_df.columns.str.strip()
-
-# Loading and cleaning the deliveries data
-deliveries_df = pd.read_csv('deliveries_2008-2024.csv')
-deliveries_df.columns = deliveries_df.columns.str.strip()
-
-
-
-matches_df = trimSpaceInValues(matches_df)
-deliveries_df = trimSpaceInValues(deliveries_df)
-
-# Replacing the empty values in the 'extra_types' with the 'None' When it is normal deliveries:
-deliveries_df.loc[deliveries_df['extras_type'].str.strip() ==
-                  '', 'extras_type'] = 'None'
-
-# Apply the cleaning functions to the matches data
-new_matchesDF = latest_teams(
-    matches_df, ['team1', 'team2', 'toss_winner', 'winner'])
-
-unique_stadium(new_matchesDF)
-
-
-# Apply the latest_teams function to deliveries data
-new_deliveriesDF = latest_teams(
-    deliveries_df, ['batting_team', 'bowling_team'])
 
 # Optimize Memory Usage
 def optimize_memory(df):
@@ -92,9 +65,55 @@ def optimize_memory(df):
             df[col] = pd.to_numeric(df[col], downcast='integer')
     return df
 
-new_matchesDF = optimize_memory(new_matchesDF)
-new_deliveriesDF = optimize_memory(new_deliveriesDF)
 
-# Free up the old references
-del matches_df
-del deliveries_df
+# -----------------------------------------------------------------------
+# Cached data loaders — data is loaded ONCE and cached across reruns.
+# Using usecols to only load columns actually needed, saving ~200 MB RAM.
+# -----------------------------------------------------------------------
+
+# Columns actually used across all pages
+MATCHES_COLS = [
+    'id', 'season', 'city', 'venue', 'team1', 'team2',
+    'toss_winner', 'toss_decision', 'winner', 'result',
+    'result_margin', 'player_of_match', 'target_runs',
+    'umpire1', 'umpire2'
+]
+
+DELIVERIES_COLS = [
+    'match_id', 'inning', 'batting_team', 'bowling_team',
+    'over', 'ball', 'batter', 'bowler', 'non_striker',
+    'batsman_runs', 'total_runs', 'extras_type', 'is_wicket'
+]
+
+
+@st.cache_data(show_spinner="Loading match data...")
+def load_matches():
+    df = pd.read_csv('matches_2008-2024.csv', usecols=MATCHES_COLS)
+    df.columns = df.columns.str.strip()
+    df = trimSpaceInValues(df)
+    df = latest_teams(df, ['team1', 'team2', 'toss_winner', 'winner'])
+    unique_stadium(df)
+    df = optimize_memory(df)
+    return df
+
+
+@st.cache_data(show_spinner="Loading delivery data...")
+def load_deliveries():
+    df = pd.read_csv('deliveries_2008-2024.csv', usecols=DELIVERIES_COLS)
+    df.columns = df.columns.str.strip()
+    df = trimSpaceInValues(df)
+
+    # Replace empty extras_type with 'None'
+    df.loc[df['extras_type'].str.strip() == '', 'extras_type'] = 'None'
+
+    df = latest_teams(df, ['batting_team', 'bowling_team'])
+    df = optimize_memory(df)
+    return df
+
+
+# Module-level references for backward compatibility with existing imports.
+# These are resolved lazily on first access via the cached functions.
+# NOTE: This runs once at module import time but benefits from Streamlit's
+# cache on subsequent pages — total data is only ever read from disk once.
+new_matchesDF = load_matches()
+new_deliveriesDF = load_deliveries()

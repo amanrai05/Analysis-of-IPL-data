@@ -297,6 +297,7 @@ def app():
 
         with col1:
             st.pyplot(fig)
+            plt.close(fig)
 
         with col2:
             st.write('### Overall Record:')
@@ -508,6 +509,7 @@ def app():
                         textcoords='offset points')
 
         st.pyplot(fig)
+        plt.close(fig)
 
     with st.expander("👉 Most Expensive Bowler"):
         st.write("> Overall Most Expensive Bowler:")
@@ -890,3 +892,4 @@ def app():
             plt.ylabel('')
 
             st.pyplot(fig)
+            plt.close(fig)
