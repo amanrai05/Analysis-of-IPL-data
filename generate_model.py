@@ -89,5 +89,5 @@ output_path = 'predict_ipl_1st_innings_score_etr.pkl'
 with open(output_path, 'wb') as f:
     pickle.dump(etr, f)
 
-print(f"\n✅ Model saved successfully as '{output_path}'")
+print(f"\nModel saved successfully as '{output_path}'")
 print("You can now run: streamlit run app.py")
