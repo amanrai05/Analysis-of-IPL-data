@@ -68,10 +68,11 @@ def optimize_memory(df):
 
 # -----------------------------------------------------------------------
 # Cached data loaders — data is loaded ONCE and cached across reruns.
-# Using usecols to only load columns actually needed, saving ~200 MB RAM.
+# We strip column headers FIRST before selecting columns, because the
+# CSV headers may contain leading/trailing spaces.
 # -----------------------------------------------------------------------
 
-# Columns actually used across all pages
+# Columns actually used across all pages (after stripping)
 MATCHES_COLS = [
     'id', 'season', 'city', 'venue', 'team1', 'team2',
     'toss_winner', 'toss_decision', 'winner', 'result',
@@ -88,8 +89,12 @@ DELIVERIES_COLS = [
 
 @st.cache_data(show_spinner="Loading match data...")
 def load_matches():
-    df = pd.read_csv('matches_2008-2024.csv', usecols=MATCHES_COLS)
+    # Load full CSV first, strip header spaces, then select needed columns
+    df = pd.read_csv('matches_2008-2024.csv')
     df.columns = df.columns.str.strip()
+    # Keep only the columns we actually use
+    cols_to_keep = [c for c in MATCHES_COLS if c in df.columns]
+    df = df[cols_to_keep]
     df = trimSpaceInValues(df)
     df = latest_teams(df, ['team1', 'team2', 'toss_winner', 'winner'])
     unique_stadium(df)
@@ -99,12 +104,17 @@ def load_matches():
 
 @st.cache_data(show_spinner="Loading delivery data...")
 def load_deliveries():
-    df = pd.read_csv('deliveries_2008-2024.csv', usecols=DELIVERIES_COLS)
+    # Load full CSV first, strip header spaces, then select needed columns
+    df = pd.read_csv('deliveries_2008-2024.csv')
     df.columns = df.columns.str.strip()
+    # Keep only the columns we actually use
+    cols_to_keep = [c for c in DELIVERIES_COLS if c in df.columns]
+    df = df[cols_to_keep]
     df = trimSpaceInValues(df)
 
     # Replace empty extras_type with 'None'
-    df.loc[df['extras_type'].str.strip() == '', 'extras_type'] = 'None'
+    if 'extras_type' in df.columns:
+        df.loc[df['extras_type'].str.strip() == '', 'extras_type'] = 'None'
 
     df = latest_teams(df, ['batting_team', 'bowling_team'])
     df = optimize_memory(df)
@@ -112,8 +122,6 @@ def load_deliveries():
 
 
 # Module-level references for backward compatibility with existing imports.
-# These are resolved lazily on first access via the cached functions.
-# NOTE: This runs once at module import time but benefits from Streamlit's
-# cache on subsequent pages — total data is only ever read from disk once.
+# Data is read from disk only once and cached by Streamlit across all reruns.
 new_matchesDF = load_matches()
 new_deliveriesDF = load_deliveries()
